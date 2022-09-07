@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 3000;
 const app = express();
 
 const DB =
-  "mongodb+srv://Luffy:luffy@cluster0.xdtg4.mongodb.net/?retryWrites=true&w=majority";
+  "mongodb+srv://Luffy:luffy@cluster0.xdtg4.mongodb.net/RajMaggiStation";
 
 //middleware
 app.use(express.json());
