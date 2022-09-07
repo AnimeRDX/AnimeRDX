@@ -93,7 +93,7 @@ userRouter.post("/api/order", auth, async (req, res) => {
 
     let user = await User.findById(req.user);
     user.cart = [];
-    user = await user.save();
+    // user = await user.save();
 
     let order = new Order({
       products,

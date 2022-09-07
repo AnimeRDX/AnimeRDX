@@ -3,6 +3,7 @@ const adminRouter = express.Router();
 const admin = require("../middlewares/admin");
 const { Product } = require("../models/product");
 const Order = require("../models/order");
+const { Advertise } = require("../models/advertise");
 const { PromiseProvider } = require("mongoose");
 
 // Add product
@@ -44,6 +45,57 @@ adminRouter.post("/admin/delete-product", admin, async (req, res) => {
     res.status(500).json({ error: e.message });
   }
 });
+adminRouter.post("/admin/delete-order", admin, async (req, res) => {
+  try {
+    const { id } = req.body;
+    let order = await Order.findByIdAndRemove(id);
+    res.json(order);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+///////ADS////////////////////
+
+adminRouter.post("/admin/add-ads", admin, async (req, res) => {
+  try {
+    const { name, description, images, quantity, price, category } = req.body;
+    let advertise = new Advertise({
+      name,
+      description,
+      images,
+      quantity,
+      price,
+      category,
+    });
+    advertise = await advertise.save();
+    res.json(advertise);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// Get all your Ads
+adminRouter.get("/admin/get-ads", admin, async (req, res) => {
+  try {
+    const advertises = await Advertise.find({});
+    res.json(advertises);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
+// Delete the ADS
+
+adminRouter.post("/admin/delete-ads", admin, async (req, res) => {
+  try {
+    const { id } = req.body;
+    let advertise = await Advertise.findByIdAndDelete(id);
+    res.json(advertise);
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
 
 adminRouter.get("/admin/get-orders", admin, async (req, res) => {
   try {
@@ -53,6 +105,7 @@ adminRouter.get("/admin/get-orders", admin, async (req, res) => {
     res.status(500).json({ error: e.message });
   }
 });
+
 
 adminRouter.post("/admin/change-order-status", admin, async (req, res) => {
   try {
@@ -66,6 +119,7 @@ adminRouter.post("/admin/change-order-status", admin, async (req, res) => {
   }
 });
 
+
 adminRouter.get("/admin/analytics", admin, async (req, res) => {
   try {
     const orders = await Order.find({});
@@ -78,19 +132,19 @@ adminRouter.get("/admin/analytics", admin, async (req, res) => {
       }
     }
     // CATEGORY WISE ORDER FETCHING
-    let noodlesEarnings = await fetchCategoryWiseProduct("Noodles");
-    let soupEarnings = await fetchCategoryWiseProduct("Soup");
+    let maggiEarnings = await fetchCategoryWiseProduct("Maggi");
+    let pastaEarnings = await fetchCategoryWiseProduct("Pasta");
     let juicesEarnings = await fetchCategoryWiseProduct("Juices");
-    let coffeeEarnings = await fetchCategoryWiseProduct("Coffee");
-    let icecreamEarnings = await fetchCategoryWiseProduct("Ice-Cream");
+    let beveragesEarnings = await fetchCategoryWiseProduct("Beverages");
+    let mealEarnings = await fetchCategoryWiseProduct("Meal");
 
     let earnings = {
       totalEarnings,
-      noodlesEarnings,
-      soupEarnings,
+      maggiEarnings,
+      pastaEarnings,
       juicesEarnings,
-      coffeeEarnings,
-      icecreamEarnings,
+      beveragesEarnings,
+      mealEarnings,
     };
 
     res.json(earnings);
